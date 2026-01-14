@@ -1,45 +1,80 @@
 <html>
   <head>
+    <meta charset="utf-8">
+    <title>A-Frame Tap to Move</title>
     <script src="https://aframe.io/releases/1.7.1/aframe.min.js"></script>
   </head>
+
   <body>
     <a-scene>
 
+      <!-- Camera + movement -->
+      <a-entity id="rig" position="0 0 0">
+        <a-entity
+          camera
+          look-controls
+          wasd-controls
+          position="0 1.6 0">
+        </a-entity>
+      </a-entity>
+
+      <!-- Cursor / Raycaster for tapping -->
+      <a-entity
+        cursor="rayOrigin: mouse"
+        raycaster="objects: .clickable">
+      </a-entity>
+
+      <!-- Objects -->
       <a-box
         position="-1 1 -3"
         rotation="0 45 0"
-        material="src: url(assets/clouds.jpg)">
+        color="#4CC3D9">
       </a-box>
 
-      <a-sphere position="0 6 -8" radius="1.25" color="#EF2D5E">
-        <a-ring
-          color="teal"
-          radius-inner="1"
-          radius-outer="2"
-          position="1 1 1">
-        </a-ring>
+      <a-sphere
+        position="0 1.25 -5"
+        radius="1.25"
+        color="#EF2D5E">
       </a-sphere>
 
       <a-cylinder
         position="1 0.75 -3"
         radius="0.5"
         height="1.5"
-        rotation="90 45 0"
         color="#FFC65D">
       </a-cylinder>
 
+      <!-- Ground (tap target) -->
       <a-plane
-        position="0 0 -4"
+        class="clickable"
+        position="0 0 0"
         rotation="-90 0 0"
-        width="4"
-        height="4"
+        width="100"
+        height="100"
         color="#7BC8A4">
       </a-plane>
 
-    <a-sky src="assets/full-360-equirectangular-spherical-panorama-of-the-lake-in-the-morning-R1FBY6.jpg"></a-sky>
-
+      <!-- Sky -->
+      <a-sky
+        src="assets/full-360-equirectangular-spherical-panorama-of-the-lake-in-the-morning-R1FBY6.jpg">
+      </a-sky>
 
     </a-scene>
+
+    <!-- Tap-to-move logic -->
+    <script>
+      const rig = document.querySelector('#rig');
+      const ground = document.querySelector('.clickable');
+
+      ground.addEventListener('click', function (evt) {
+        const point = evt.detail.intersection.point;
+        rig.setAttribute('position', {
+          x: point.x,
+          y: 0,
+          z: point.z
+        });
+      });
+    </script>
+
   </body>
 </html>
-
